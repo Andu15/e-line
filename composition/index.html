@@ -60,67 +60,68 @@
 
   <script src="https://unpkg.com/vue@3"></script>
   <script>
-    const { createApp, ref, reactive } = Vue;
+    const { createApp, ref, reactive, toRefs } = Vue;
     const app = createApp({
       setup(){
-        const product = ref({
+        const productState = reactive({
+          product: {
           name: "Camara",
           price: 450_000,
           stock: 3,
           content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
           images: [
-            {
-              image: "./images/camara.jpg",
-              thumbnail: "./images/camara-thumb.jpg"
-            },
-            {
-              image: "./images/camara-2.jpg",
-              thumbnail: "./images/camara-2-thumb.jpg"
-            }
-          ],
-          new: true,
-          offer: true,
-          quantity: 1
+              {
+                image: "./images/camara.jpg",
+                thumbnail: "./images/camara-thumb.jpg"
+              },
+              {
+                image: "./images/camara-2.jpg",
+                thumbnail: "./images/camara-2-thumb.jpg"
+              }
+            ],
+            new: true,
+            offer: true,
+            quantity: 1
+          },
+          activeImage: 0
         });
 
-        const activeImage = ref(0);
+        const cartState = reactive({
+          cartOpen: false,
+          cart: []
+        });
 
-        const cartOpen = ref(false);
-
-        const cart = ref([]);
-
-        const discountCodes = ref(["NEWYEAR2022", "ELINE2022"]);
 
         function addToCar(){
-          const prodIndex = cart.value.findIndex(prod => prod.name === product.value.name);
+          const prodIndex = cartState.cart.findIndex(prod => prod.name === productState.product.name);
             if (prodIndex >= 0) {
-              cart.value[prodIndex].quantity += 1;
+              cartState.cart[prodIndex].quantity += 1;
             } else {
-              cart.value.push(product.value);
+              cartState.cart.push(productState.product);
             }
-            product.value.stock -= 1;
+            productState.product.stock -= 1;
         }
+
+        const discountCodes = ref(["NEWYEAR2022", "ELINE2022"]);
 
         function applyDiscount(event){
           const discountCodeIndex = discountCodes.value.indexOf(event.target.value);
           if (discountCodeIndex >= 0 ) {
-            product.value.price *= 50 / 100;
+            productState.product.price *= 50 / 100;
             discountCodes.value.splice(discountCodeIndex, 1);
           }
         }
 
         setInterval(() => {
-            if (activeImage.value) 
-              activeImage.value = 0
+            if (productState.activeImage) 
+            productState.activeImage = 0
             else 
-              activeImage.value = 1
+            productState.activeImage = 1
           }, 3000);
 
         return {
-          product,
-          activeImage,
-          cartOpen,
-          cart,
+          ...toRefs(productState),
+          ...toRefs(cartState),
 
           applyDiscount,
           addToCar
