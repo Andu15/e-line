@@ -18,13 +18,12 @@ app.component("Product", {
 
   <section class="description">
     <h4>{{ product.name.toUpperCase() }} {{ product.stock === 0 ? "😔" : "😎" }}</h4>
-    <span class="badge new" v-if="product.new" >Nuevo</span>
-    <span class="badge offer" v-if="product.offer" >Oferta</span>
+    <Badge :product="product"/>
     <p class="description__status" v-if="product.stock === 3">Quedan pocas unidades!</p>
     <p class="description__status" v-else-if="product.stock === 2">El producto esta por terminarse</p>
     <p class="description__status" v-else-if="product.stock === 1">Ultima unidad disponible!</p>
     <p class="description__status" v-else>Sin stock!</p>
-    <p class="description__price">{{ new Intl.NumberFormat("es-PE").format(product.price) }} </p>
+    <p class="description__price" :style="{ color: price_color }">{{ new Intl.NumberFormat("es-PE").format(product.price) }} </p>
     <p class="description__content">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium quasi pariatur, eveniet necessitatibus, et unde explicabo dolore natus mollitia dolores aspernatur eligendi esse repudiandae dolorum ex ab accusamus consectetur fugiat.
     </p>
@@ -43,7 +42,8 @@ app.component("Product", {
   ],
   setup(props, context){
     const productState = reactive({
-      activeImage: 0
+      activeImage: 0,
+      price_color: "rgb()104, 104, 209"
     });
 
     function sendToCart(){
@@ -59,6 +59,22 @@ app.component("Product", {
             discountCodes.value.splice(discountCodeIndex, 1);
           }
         }
+
+    watch(
+      () => productState.activeImage,
+      (val, oldVal) => {
+      console.log(val, oldVal);
+      }
+    );
+
+    watch(
+      () => props.product.stock,
+      (stock) => {
+        if ( stock <=1 ) {
+          productState.price_color = "rgb(188, 30, 67)"
+        }
+      }
+      );
 
     return {
       ...toRefs(productState),
