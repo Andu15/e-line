@@ -46,7 +46,7 @@ app.component("Product", {
     return {
       activeImage: 0,
       discountCodes: ["NEWYEAR2022", "ELINE2022"],
-      price_color: "rgb(104, 104, 209)"
+      // price_color: "rgb(104, 104, 209)"
     }
   },
   methods: {
@@ -65,11 +65,18 @@ app.component("Product", {
     activeImage(value, oldValue){
       console.log(value, oldValue);
     },
-    "product.stock"(stock){
-      // console.log(stock);
-      if(stock < 1){
-        this.price_color = "rgb(188, 30, 67)";
+    // "product.stock"(stock){
+    //   if(stock < 1){
+    //     this.price_color = "rgb(188, 30, 67)";
+    //   }
+    // }
+  },
+  computed: {
+    price_color(){
+      if ( this.product.stock <= 1 ) {
+        return "rgb(188, 30, 67)";
       }
+      return "rgb(104, 104, 209)";
     }
   }
 });

@@ -28,7 +28,7 @@
 
   <script src="https://unpkg.com/vue@3"></script>
   <script>
-    const { createApp, ref, reactive, toRefs, watch } = Vue;
+    const { createApp, ref, reactive, toRefs, watch, computed } = Vue;
     const app = createApp({
       setup(){
 
@@ -95,8 +95,23 @@
         const cartState = reactive({
           cartOpen: false,
           cart: [],
-          total: 0
+          total: computed(() => {
+            return cartState.cart.reduce((prev, curr) => {
+            let prevPrice = prev.price || prev;
+            const prevQuantity = prev.quantity || 1;
+            return prevPrice = prevQuantity + curr.price * curr.quantity;
+            }, 0);
+          })
+          // total: 0
         });
+
+        // const total = computed(() => {
+        //   return cartState.cart.reduce((prev, curr) => {
+        //       let prevPrice = prev.price || prev;
+        //       const prevQuantity = prev.quantity || 1;
+        //       return prevPrice = prevQuantity + curr.price * curr.quantity;
+        //   }, 0);
+        // });
 
         // setInterval(() => {
         //     if (productState.activeImage) 
@@ -116,14 +131,14 @@
         }
 
         watch(
-          cartState.cart,
-          (val, oldVal) => {
-            cartState.total = cartState.cart.reduce((prev, curr) => {
-                let prevPrice = prev.price || prev;
-                const prevQuantity = prev.quantity || 1;
-                return prevPrice = prevQuantity + curr.price * curr.quantity;
-            }, 0);
-          }
+          // cartState.cart,
+          // (val, oldVal) => {
+          //   cartState.total = cartState.cart.reduce((prev, curr) => {
+          //       let prevPrice = prev.price || prev;
+          //       const prevQuantity = prev.quantity || 1;
+          //       return prevPrice = prevQuantity + curr.price * curr.quantity;
+          //   }, 0);
+          // }
         )
 
         return {
