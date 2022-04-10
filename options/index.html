@@ -21,8 +21,13 @@
       </div>
     </header>
 
+    <section>
+      <input type="search" id="site-search" name="query" v-model="word" placeholder="Ingresar Producto"> 
+      <button @click="search()">Buscar <img src="./images/search-icon.svg" alt="icono de buscar" height="12"/></button>
+    </section>
+
     <main>
-      <Product v-for="product in products" :key="product.name" :product="product" @sendtocart="addToCar($event)"/>
+      <Product v-for="product in filterProducts" :key="product.name" :product="product" @sendtocart="addToCar($event)"/>
     </main>
   </div>
 
@@ -40,6 +45,10 @@
           
           cart: [
           ],
+
+          word: "",
+
+          query: ""
           
         }
       },
@@ -52,6 +61,9 @@
             this.cart.push(product);
           }
           product.stock -= 1;
+        },
+        search(){
+          this.query = this.word;
         }
       },
       watch: {
@@ -73,6 +85,14 @@
             const prevQuantity = prev.quantity || 1;
             return prevPrice = prevQuantity + curr.price * curr.quantity;
           }, 0);
+        },
+
+        filterProducts(){
+          if(this.query != "") {
+            return this.products.filter(prod => prod.name.toLowerCase().includes(this.query.toLowerCase()));
+            // return this.products.filter(prod => prod.name.toLowerCase().includes(this.query.toLowerCase()) ? prod : false);
+          }
+          return this.products;
         }
       },
       created(){

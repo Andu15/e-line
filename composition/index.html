@@ -21,8 +21,12 @@
       </div>
     </header>
 
+    <section>
+      <input type="search" id="site-search" name="query" v-model="query" placeholder="Ingresar Producto"> 
+    </section>
+
     <main>
-      <Product v-for="product in products" :key="product.name" :product="product" @sendtocart="addToCar($event)"/>
+      <Product v-for="product in filterProducts" :key="product.name" :product="product" @sendtocart="addToCar($event)"/>
     </main>
   </div>
 
@@ -33,6 +37,8 @@
       setup(){
 
         const products = ref([]);
+
+        const query = ref("");
 
         const cartState = reactive({
           cartOpen: false,
@@ -61,6 +67,13 @@
         //     else 
         //     productState.activeImage = 1
         //   }, 3000);
+
+        const filterProducts = computed(() => {
+          if(query.value != "") {
+            return products.value.filter(prod => prod.name.toLowerCase().includes(query.value.toLowerCase()));
+          }
+          return products.value;
+        });
 
         function addToCar(product){
           const prodIndex = cartState.cart.findIndex(prod => prod.name === product.name);
@@ -92,7 +105,9 @@
         return {
           ...toRefs(cartState),
           addToCar,
-          products
+          products,
+          query,
+          filterProducts
         }
       }
     }); 
