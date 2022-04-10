@@ -32,65 +32,7 @@
     const app = createApp({
       setup(){
 
-        const products = ref([
-          {
-            name: "Camara",
-            price: 450_000,
-            stock: 3,
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-            images: [
-                {
-                  image: "./images/camara.jpg",
-                  thumbnail: "./images/camara-thumb.jpg"
-                },
-                {
-                  image: "./images/camara-2.jpg",
-                  thumbnail: "./images/camara-2-thumb.jpg"
-                }
-              ],
-            new: true,
-            offer: true,
-            quantity: 1
-          },
-          {
-            name: "Camara PL",
-            price: 550_000,
-            stock: 1,
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-            images: [
-                {
-                  image: "./images/camara.jpg",
-                  thumbnail: "./images/camara-thumb.jpg"
-                },
-                {
-                  image: "./images/camara-2.jpg",
-                  thumbnail: "./images/camara-2-thumb.jpg"
-                }
-              ],
-            new: true,
-            offer: true,
-            quantity: 1
-          },
-          {
-            name: "Camara PL2",
-            price: 850_000,
-            stock: 0,
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-            images: [
-                {
-                  image: "./images/camara.jpg",
-                  thumbnail: "./images/camara-thumb.jpg"
-                },
-                {
-                  image: "./images/camara-2.jpg",
-                  thumbnail: "./images/camara-2-thumb.jpg"
-                }
-              ],
-            new: true,
-            offer: true,
-            quantity: 1
-          }
-        ]);
+        const products = ref([]);
 
         const cartState = reactive({
           cartOpen: false,
@@ -140,6 +82,12 @@
           //   }, 0);
           // }
         )
+
+        fetch("https://my-json-server.typicode.com/Andu15/demo/products")
+          .then(res => res.json())
+          .then(data => {
+            products.value = data;
+          })
 
         return {
           ...toRefs(cartState),
